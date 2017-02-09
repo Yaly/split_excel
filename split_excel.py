@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author: YALY
 # @Date:   2017-01-13 15:11:17
-# @Last Modified by:   YALY
-# @Last Modified time: 2017-02-04 13:52:59
+# @Last Modified by:   yaly
+# @Last Modified time: 2017-02-09 14:58:35
 # Version 0.1
 
 '''
@@ -22,16 +22,19 @@ ws1 = wb1.active
 
 # count work sheet rows
 ws1_rows = len(tuple(ws1.rows))
+ws1_columns = len(tuple(ws1.columns))
+
 
 # set the number of rows per file
-sep_rows = 100
+sep_rows = 1000
 
-def insert_data(file_num, rows=100):
+
+def insert_data(file_num, columns, rows=100):
 	for row in range(1, rows+1):
-		ws.cell(row = row, column=1).value, ws.cell(row = row, column=2).value = ws1.cell(row = row + file_num * 100, column = 1).value, ws1.cell(row = row + file_num * 100, column = 2).value
+		for column in range(1, columns+1):
+			ws.cell(row = row, column=column).value = ws1.cell(row = row + file_num * 100, column = column).value
 
-
-if ws1_rows % 100 == 0:
+if ws1_rows % sep_rows == 0:
 	file_nums = ws1_rows / sep_rows
 else:
 	file_nums =  ws1_rows / sep_rows + 1
@@ -39,6 +42,6 @@ else:
 for file_num in range(0, file_nums):
 	wb = Workbook()
 	ws = wb.active
-	insert_data(file_num, sep_rows)
+	insert_data(file_num,ws1_columns, sep_rows)
 	filename =  'wb_' + str(file_num) + '.xlsx'
 	wb.save(filename=filename)
